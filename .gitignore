@@ -1,0 +1,5 @@
+bin/
+coverage/
+obj/
+TestResults/
+mono_crash.*
