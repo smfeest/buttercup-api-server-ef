@@ -19,6 +19,8 @@ csharp_style_var_for_built_in_types = true
 csharp_style_var_when_type_is_apparent = true
 # Compiler warnings
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
+# Code style analysis rules
+dotnet_analyzer_diagnostic.category-Style.severity = warning
 
 [*.sln]
 charset = utf-8-bom
