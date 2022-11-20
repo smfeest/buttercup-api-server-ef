@@ -10,6 +10,8 @@ trim_trailing_whitespace = true
 
 [*.cs]
 indent_size = 4
+# Compiler warnings
+dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
 
 [*.sln]
 charset = utf-8-bom
