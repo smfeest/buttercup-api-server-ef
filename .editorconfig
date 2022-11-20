@@ -17,6 +17,8 @@ csharp_style_namespace_declarations = file_scoped
 csharp_style_var_elsewhere = true
 csharp_style_var_for_built_in_types = true
 csharp_style_var_when_type_is_apparent = true
+# Code style analysis rules
+dotnet_analyzer_diagnostic.category-Style.severity = warning
 
 [*.sln]
 charset = utf-8-bom
