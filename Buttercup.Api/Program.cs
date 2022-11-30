@@ -1,10 +1,15 @@
 using Buttercup.Api;
+using Buttercup.Api.DbModel;
+using Microsoft.EntityFrameworkCore;
 
 #pragma warning disable CA1852
 
 var builder = WebApplication.CreateBuilder(args);
 
 var isDevelopment = builder.Environment.IsDevelopment();
+
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseNpgsql(builder.Configuration.GetConnectionString("AppDb")));
 
 builder.Services
     .AddGraphQLServer()
