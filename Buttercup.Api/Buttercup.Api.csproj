@@ -6,4 +6,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Buttercup.Api.DbModel\Buttercup.Api.DbModel.csproj" />
+  </ItemGroup>
 </Project>
