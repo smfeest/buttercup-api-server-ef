@@ -9,7 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(builder.Configuration.GetConnectionString("AppDb")));
+    options => options
+        .UseNpgsql(
+            builder.Configuration.GetConnectionString("AppDb"),
+            npgsqlOptions => npgsqlOptions.MigrationsHistoryTable("__migration_history"))
+        .UseSnakeCaseNamingConvention());
 
 builder.Services
     .AddGraphQLServer()
