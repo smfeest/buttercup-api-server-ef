@@ -12,7 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options
         .UseNpgsql(
             builder.Configuration.GetConnectionString("AppDb"),
-            npgsqlOptions => npgsqlOptions.MigrationsHistoryTable("__migration_history"))
+            npgsqlOptions => npgsqlOptions
+                .MigrationsAssembly("Buttercup.Api.DbModel.Migrations")
+                .MigrationsHistoryTable("__migration_history"))
         .UseSnakeCaseNamingConvention());
 
 builder.Services
