@@ -14,4 +14,9 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     { }
+
+    /// <summary>
+    /// Gets the set of all users.
+    /// </summary>
+    public DbSet<User> Users => this.Set<User>();
 }
