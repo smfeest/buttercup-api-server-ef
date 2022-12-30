@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var isDevelopment = builder.Environment.IsDevelopment();
 
-builder.Services.AddDbContext<AppDbContext>(
+builder.Services.AddPooledDbContextFactory<AppDbContext>(
     options => options
         .UseNpgsql(
             builder.Configuration.GetConnectionString("AppDb"),
@@ -22,7 +22,7 @@ builder.Services
     .AddQueryType<Query>()
     .AllowIntrospection(isDevelopment)
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment)
-    .RegisterDbContext<AppDbContext>();
+    .RegisterDbContext<AppDbContext>(DbContextKind.Pooled);
 
 var app = builder.Build();
 
