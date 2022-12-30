@@ -9,7 +9,8 @@ var isDevelopment = builder.Environment.IsDevelopment();
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
-    .AllowIntrospection(isDevelopment);
+    .AllowIntrospection(isDevelopment)
+    .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment);
 
 var app = builder.Build();
 
