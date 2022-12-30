@@ -8,12 +8,14 @@ var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services
     .AddGraphQLServer()
-    .AddQueryType<Query>();
+    .AddQueryType<Query>()
+    .AllowIntrospection(isDevelopment);
 
 var app = builder.Build();
 
 app.MapGraphQL().WithOptions(new()
 {
+    EnableSchemaRequests = isDevelopment,
     Tool = { Enable = isDevelopment }
 });
 
