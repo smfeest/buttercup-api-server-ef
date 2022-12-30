@@ -21,7 +21,8 @@ builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
     .AllowIntrospection(isDevelopment)
-    .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment);
+    .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment)
+    .RegisterDbContext<AppDbContext>();
 
 var app = builder.Build();
 
