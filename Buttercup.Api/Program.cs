@@ -20,6 +20,7 @@ builder.Services.AddPooledDbContextFactory<AppDbContext>(
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
+    .AddTypeExtension<UserExtension>()
     .AllowIntrospection(isDevelopment)
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment)
     .RegisterDbContext<AppDbContext>(DbContextKind.Pooled);
