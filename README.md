@@ -7,6 +7,20 @@
 - [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 - [PostgreSQL 14.5 or newer](https://www.postgresql.org/download/)
 
+### Initial set up
+
+1.  Restore .NET tools:
+
+        dotnet tool restore
+
+2.  Create the database user:
+
+        sudo -u postgres psql --command="CREATE USER buttercup_dev PASSWORD 'buttercup_dev' CREATEDB"
+
+3.  Create the application database:
+
+        dotnet ef database update -s Buttercup.Api
+
 ### Useful commands
 
 - Running the application, watching for changes:
