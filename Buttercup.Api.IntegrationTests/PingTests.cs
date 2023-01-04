@@ -1,14 +1,13 @@
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Buttercup.Api.IntegrationTests;
 
-public class PingTests : IClassFixture<WebApplicationFactory<Query>>
+public class PingTests : IClassFixture<AppFactory>
 {
-    private readonly WebApplicationFactory<Query> factory;
+    private readonly AppFactory factory;
 
-    public PingTests(WebApplicationFactory<Query> factory) => this.factory = factory;
+    public PingTests(AppFactory factory) => this.factory = factory;
 
     [Fact]
     public async void QueryingPing()
