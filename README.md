@@ -16,3 +16,11 @@
 - Running the application, without watching for changes:
 
       dotnet run --project Buttercup.Api
+
+- Running all tests, watching for changes:
+
+      dotnet watch test --project buttercup-api-server.sln
+
+- Running all tests, without watching for changes
+
+      dotnet test
