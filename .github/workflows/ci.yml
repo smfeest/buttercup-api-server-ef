@@ -3,8 +3,8 @@ on:
   push:
   workflow_dispatch:
 jobs:
-  build:
-    name: Build
+  build_and_test:
+    name: Build and test
     runs-on: ubuntu-22.04
     steps:
       - name: Setup .NET
@@ -13,5 +13,14 @@ jobs:
           dotnet-version: 7.0.101
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Restore .NET tools
+        run: dotnet tool restore
       - name: Build
         run: dotnet build --configuration Release /WarnAsError
+      - name: Run tests
+        run: dotnet test --no-build --configuration Release --collect "XPlat Code Coverage"
+      - name: Report code coverage
+        if: ${{ hashFiles('**/coverage.cobertura.xml') }}
+        run: |
+          dotnet reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReports -reporttypes:TextSummary
+          cat CoverageReports/Summary.txt
