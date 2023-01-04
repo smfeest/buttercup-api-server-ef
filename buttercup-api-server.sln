@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api", "Buttercup.Api\Buttercup.Api.csproj", "{EC72AED1-7DC2-4D21-B5F7-6D983082C83E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.IntegrationTests", "Buttercup.Api.IntegrationTests\Buttercup.Api.IntegrationTests.csproj", "{F9F30EF6-2493-4476-9329-E596F5F23AB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{EC72AED1-7DC2-4D21-B5F7-6D983082C83E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC72AED1-7DC2-4D21-B5F7-6D983082C83E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC72AED1-7DC2-4D21-B5F7-6D983082C83E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
