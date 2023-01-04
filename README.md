@@ -38,3 +38,13 @@
 - Running all tests, without watching for changes
 
       dotnet test
+
+- Adding a new database migration:
+
+      dotnet ef migrations add <NAME> \
+        -s Buttercup.Api \
+        -p Buttercup.Api.DbModel.Migrations
+
+- Running all pending database migrations:
+
+      dotnet ef database update -s Buttercup.Api
