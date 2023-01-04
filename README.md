@@ -48,3 +48,7 @@
 - Running all pending database migrations:
 
       dotnet ef database update -s Buttercup.Api
+
+- Dropping the database:
+
+      dotnet ef database drop -s Buttercup.Api
