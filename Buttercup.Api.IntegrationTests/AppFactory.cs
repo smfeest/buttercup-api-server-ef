@@ -11,6 +11,15 @@ public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
 
     async Task IAsyncLifetime.DisposeAsync() => await this.DisposeAsync();
 
+    public async Task<AppDbContext> CreateAppDbContext()
+    {
+        using var scope = this.Services.CreateScope();
+
+        var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+
+        return await contextFactory.CreateDbContextAsync();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder
             .UseSetting(
@@ -20,11 +29,7 @@ public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
 
     private async Task RecreateDatabase()
     {
-        using var scope = this.Services.CreateScope();
-
-        var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
-
-        using var context = await contextFactory.CreateDbContextAsync();
+        using var context = await this.CreateAppDbContext();
 
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
