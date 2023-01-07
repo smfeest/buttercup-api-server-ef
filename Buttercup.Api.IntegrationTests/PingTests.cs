@@ -3,7 +3,8 @@ using Xunit;
 
 namespace Buttercup.Api.IntegrationTests;
 
-public class PingTests : IClassFixture<AppFactory>
+[Collection(nameof(IntegrationTestCollection))]
+public class PingTests
 {
     private readonly AppFactory factory;
 
