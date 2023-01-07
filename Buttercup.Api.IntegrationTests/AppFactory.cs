@@ -14,6 +14,19 @@ public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
 
     async Task IAsyncLifetime.DisposeAsync() => await this.DisposeAsync();
 
+    /// <summary>
+    /// Creates a new instance of <see cref="AppDbContext" /> that connects to the test database.
+    /// </summary>
+    /// <returns>The new <see cref="AppDbContext" /> instance.</returns>
+    public async Task<AppDbContext> CreateAppDbContext()
+    {
+        using var scope = this.Services.CreateScope();
+
+        var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+
+        return await contextFactory.CreateDbContextAsync();
+    }
+
     /// <inheritdoc/>
     protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder
@@ -24,11 +37,7 @@ public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
 
     private async Task RecreateDatabase()
     {
-        using var scope = this.Services.CreateScope();
-
-        var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
-
-        using var context = await contextFactory.CreateDbContextAsync();
+        using var context = await this.CreateAppDbContext();
 
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
