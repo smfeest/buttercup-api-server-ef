@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api", "Buttercup.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.IntegrationTests", "Buttercup.Api.IntegrationTests\Buttercup.Api.IntegrationTests.csproj", "{F9F30EF6-2493-4476-9329-E596F5F23AB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.DbModel", "Buttercup.Api.DbModel\Buttercup.Api.DbModel.csproj", "{87D646CF-97EF-443E-A607-415168365BFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.DbModel.Migrations", "Buttercup.Api.DbModel.Migrations\Buttercup.Api.DbModel.Migrations.csproj", "{CEDD9CD4-0852-4D5E-813E-E64E3608A042}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9F30EF6-2493-4476-9329-E596F5F23AB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D646CF-97EF-443E-A607-415168365BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D646CF-97EF-443E-A607-415168365BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D646CF-97EF-443E-A607-415168365BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D646CF-97EF-443E-A607-415168365BFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEDD9CD4-0852-4D5E-813E-E64E3608A042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEDD9CD4-0852-4D5E-813E-E64E3608A042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEDD9CD4-0852-4D5E-813E-E64E3608A042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEDD9CD4-0852-4D5E-813E-E64E3608A042}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

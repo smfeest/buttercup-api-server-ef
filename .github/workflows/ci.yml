@@ -11,12 +11,20 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.101
+      - name: Start PostgreSQL server
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
+      - name: Create PostgreSQL role
+        run: sudo -u postgres psql --command="CREATE USER buttercup_dev PASSWORD 'buttercup_dev' CREATEDB"
       - name: Checkout
         uses: actions/checkout@v3
       - name: Restore .NET tools
         run: dotnet tool restore
-      - name: Build
+      - name: Build application
         run: dotnet build --configuration Release /WarnAsError
+      - name: Build database
+        run: dotnet ef database update -s ./Buttercup.Api
       - name: Run tests
         run: dotnet test --no-build --configuration Release --collect "XPlat Code Coverage"
       - name: Report code coverage
