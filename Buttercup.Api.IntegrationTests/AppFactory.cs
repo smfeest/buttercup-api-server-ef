@@ -25,7 +25,8 @@ public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
             .UseSetting(
                 "ConnectionStrings:AppDb",
                 "Host=localhost;Username=buttercup_dev;Password=buttercup_dev;Database=buttercup_test")
-            .UseSetting("HostBuilder:ReloadConfigOnChange", bool.FalseString);
+            .UseSetting("HostBuilder:ReloadConfigOnChange", bool.FalseString)
+            .UseSetting("Logging:LogLevel:Default", "Warning");
 
     private async Task RecreateDatabase()
     {
