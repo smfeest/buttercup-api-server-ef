@@ -5,6 +5,4 @@ namespace Buttercup.Api;
 public sealed class Query
 {
     public IQueryable<User> GetUsers(AppDbContext dbContext) => dbContext.Users;
-
-    public string Ping => "pong";
 }
