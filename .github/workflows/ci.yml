@@ -30,5 +30,9 @@ jobs:
       - name: Report code coverage
         if: ${{ hashFiles('**/coverage.cobertura.xml') }}
         run: |
-          dotnet reportgenerator -reports:**/coverage.cobertura.xml -targetdir:CoverageReports -reporttypes:TextSummary
+          dotnet reportgenerator \
+            -reports:**/coverage.cobertura.xml \
+            -assemblyfilters:-Buttercup.Api.DbModel.Migrations \
+            -targetdir:CoverageReports \
+            -reporttypes:TextSummary
           cat CoverageReports/Summary.txt
