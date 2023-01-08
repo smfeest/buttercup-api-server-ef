@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Buttercup.Api.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -27,12 +26,8 @@ public class UsersTests
 
             using var client = this.factory.CreateClient();
 
-            using var response = await client.PostAsJsonAsync(
-                "/graphql", new { Query = "{ users { id name email timeZone created } }" });
-
-            using var stream = await response.Content.ReadAsStreamAsync();
-
-            using var document = await JsonDocument.ParseAsync(stream);
+            using var document = await client.PostQuery(
+                "{ users { id name email timeZone created } }");
 
             var returnedUsers = document.RootElement
                 .GetProperty("data")
