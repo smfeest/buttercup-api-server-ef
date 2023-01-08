@@ -19,6 +19,7 @@ builder.Services.AddPooledDbContextFactory<AppDbContext>(
 
 builder.Services
     .AddGraphQLServer()
+    .AddProjections()
     .AddQueryType<Query>()
     .AddTypeExtension<UserExtension>()
     .AllowIntrospection(isDevelopment)

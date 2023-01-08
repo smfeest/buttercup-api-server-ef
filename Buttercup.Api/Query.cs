@@ -12,5 +12,6 @@ public sealed class Query
     /// </summary>
     /// <param name="dbContext">The database context.</param>
     /// <returns>An <see cref="IQueryable"/> for querying all users.</returns>
+    [UseProjection]
     public IQueryable<User> GetUsers(AppDbContext dbContext) => dbContext.Users;
 }
