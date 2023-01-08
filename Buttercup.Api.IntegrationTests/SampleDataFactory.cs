@@ -27,11 +27,24 @@ public sealed class SampleDataFactory
         Created = this.NextDateTime()
     };
 
-    private DateTime NextDateTime() =>
+    /// <summary>
+    /// Generates a unique UTC date and time.
+    /// </summary>
+    /// <returns>The generated date and time.</returns>
+    public DateTime NextDateTime() =>
         new DateTime(2000, 1, 2, 3, 4, 5, DateTimeKind.Utc)
             + (new TimeSpan(1, 2, 3, 4, 5) * this.NextInt());
 
-    private int NextInt() => this.nextInt++;
+    /// <summary>
+    /// Generates a unique integer value.
+    /// </summary>
+    /// <returns>The generated integer value.</returns>
+    public int NextInt() => this.nextInt++;
 
-    private string NextString(string prefix) => $"{prefix}-{this.NextInt()}";
+    /// <summary>
+    /// Generates a unique string value.
+    /// </summary>
+    /// <param name="prefix">The prefix to be included in the string.</param>
+    /// <returns>The generated string value.</returns>
+    public string NextString(string prefix) => $"{prefix}-{this.NextInt()}";
 }
