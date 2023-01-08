@@ -16,11 +16,11 @@ public sealed class SampleDataFactory
         Created = this.NextDateTime()
     };
 
-    private DateTime NextDateTime() =>
+    public DateTime NextDateTime() =>
         new DateTime(2000, 1, 2, 3, 4, 5, DateTimeKind.Utc)
             + (new TimeSpan(1, 2, 3, 4, 5) * this.NextInt());
 
-    private int NextInt() => this.nextInt++;
+    public int NextInt() => this.nextInt++;
 
-    private string NextString(string prefix) => $"{prefix}-{this.NextInt()}";
+    public string NextString(string prefix) => $"{prefix}-{this.NextInt()}";
 }
