@@ -16,6 +16,11 @@ public class AppDbContext : DbContext
     { }
 
     /// <summary>
+    /// Gets the set of all recipes.
+    /// </summary>
+    public DbSet<Recipe> Recipes => this.Set<Recipe>();
+
+    /// <summary>
     /// Gets the set of all users.
     /// </summary>
     public DbSet<User> Users => this.Set<User>();
