@@ -8,6 +8,17 @@ namespace Buttercup.Api;
 public sealed class Query
 {
     /// <summary>
+    /// Returns an <see cref="IQueryable"/> for querying a specific user.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
+    /// <param name="id">The primary key of the user.</param>
+    /// <returns>An <see cref="IQueryable"/> for querying the specified user.</returns>
+    [UseSingleOrDefault]
+    [UseProjection]
+    public IQueryable<User> GetUser(AppDbContext dbContext, long id) =>
+        dbContext.Users.Where(u => u.Id == id);
+
+    /// <summary>
     /// Returns an <see cref="IQueryable"/> for querying all users.
     /// </summary>
     /// <param name="dbContext">The database context.</param>
