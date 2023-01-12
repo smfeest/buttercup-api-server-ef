@@ -6,6 +6,20 @@ public sealed class SampleDataFactory
 {
     private int nextInt = 1;
 
+    public Recipe BuildRecipe(bool setOptionalAttributes = false) => new()
+    {
+        Id = this.NextInt(),
+        Title = this.NextString("title"),
+        PreparationMinutes = setOptionalAttributes ? this.NextInt() : null,
+        CookingMinutes = setOptionalAttributes ? this.NextInt() : null,
+        Servings = setOptionalAttributes ? this.NextInt() : null,
+        Ingredients = new() { this.NextString("ingredient") },
+        Steps = new() { this.NextString("step") },
+        Source = setOptionalAttributes ? this.NextString("source") : null,
+        Created = this.NextDateTime(),
+        Contributor = setOptionalAttributes ? this.BuildUser(true) : null
+    };
+
     public User BuildUser(bool setOptionalAttributes = false) => new()
     {
         Id = this.NextInt(),

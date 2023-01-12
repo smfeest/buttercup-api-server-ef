@@ -4,6 +4,9 @@ namespace Buttercup.Api;
 
 public sealed class Query
 {
+    [UseProjection]
+    public IQueryable<Recipe> GetRecipes(AppDbContext dbContext) => dbContext.Recipes;
+
     [UseSingleOrDefault]
     [UseProjection]
     public IQueryable<User> GetUser(AppDbContext dbContext, long id) =>

@@ -1,4 +1,4 @@
-using Buttercup.Api.DbModel;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -25,26 +25,28 @@ public class UsersTests
 
             await dbContext.SaveChangesAsync();
 
-            async Task<User?> QueryUser(long id)
+            using var client = this.appFactory.CreateClient();
+
+            Task<JsonDocument> PostUserQuery(long id) => client.PostQuery(
+                @"query($id: Long!) {
+                    user(id: $id) {
+                        id name email timeZone created
+                    }
+                }",
+                new { id });
+
+            JsonElement GetUserElement(JsonDocument document) =>
+                document.RootElement.GetProperty("data").GetProperty("user");
+
+            using (var document = await PostUserQuery(insertedUser.Id))
             {
-                using var client = this.appFactory.CreateClient();
-
-                using var document = await client.PostQuery(
-                    @"query($id: Long!) {
-                        user(id: $id) {
-                            id name email timeZone created
-                        }
-                    }",
-                    new { id });
-
-                return document.RootElement
-                    .GetProperty("data")
-                    .GetProperty("user")
-                    .DeserializeObject<User>();
+                JsonAssert.Equivalent(insertedUser, GetUserElement(document));
             }
 
-            Assert.Equivalent(insertedUser, await QueryUser(insertedUser.Id));
-            Assert.Null(await QueryUser(this.sampleDataFactory.NextInt()));
+            using (var document = await PostUserQuery(this.sampleDataFactory.NextInt()))
+            {
+                JsonAssert.Null(GetUserElement(document));
+            }
         }
         finally
         {
@@ -70,12 +72,9 @@ public class UsersTests
             using var document = await client.PostQuery(
                 "{ users { id name email timeZone created } }");
 
-            var returnedUsers = document.RootElement
-                .GetProperty("data")
-                .GetProperty("users")
-                .DeserializeObjects<User>();
+            var returnedUsers = document.RootElement.GetProperty("data").GetProperty("users");
 
-            Assert.Equivalent(insertedUser, Assert.Single(returnedUsers));
+            JsonAssert.Equivalent(new[] { insertedUser }, returnedUsers);
         }
         finally
         {

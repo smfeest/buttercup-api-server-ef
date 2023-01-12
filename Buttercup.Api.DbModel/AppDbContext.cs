@@ -8,5 +8,7 @@ public class AppDbContext : DbContext
         : base(options)
     { }
 
+    public DbSet<Recipe> Recipes => Set<Recipe>();
+
     public DbSet<User> Users => Set<User>();
 }
