@@ -8,6 +8,17 @@ namespace Buttercup.Api;
 public sealed class Query
 {
     /// <summary>
+    /// Returns an <see cref="IQueryable"/> for querying a specific recipe.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
+    /// <param name="id">The primary key of the recipe.</param>
+    /// <returns>An <see cref="IQueryable"/> for querying the specified recipe.</returns>
+    [UseSingleOrDefault]
+    [UseProjection]
+    public IQueryable<Recipe> GetRecipe(AppDbContext dbContext, long id) =>
+        dbContext.Recipes.Where(r => r.Id == id);
+
+    /// <summary>
     /// Returns an <see cref="IQueryable"/> for querying all recipes.
     /// </summary>
     /// <param name="dbContext">The database context.</param>

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -10,6 +11,62 @@ public class RecipesTests
     private readonly SampleDataFactory sampleDataFactory = new();
 
     public RecipesTests(AppFactory appFactory) => this.appFactory = appFactory;
+
+    [Fact]
+    public async void QueryingRecipe()
+    {
+        using var dbContext = await this.appFactory.CreateAppDbContext();
+
+        try
+        {
+            var recipe = this.sampleDataFactory.BuildRecipe(setOptionalAttributes: true);
+
+            dbContext.Recipes.Add(recipe);
+
+            await dbContext.SaveChangesAsync();
+
+            using var client = this.appFactory.CreateClient();
+
+            Task<JsonDocument> PostRecipeQuery(long id) => client.PostQuery(
+                @"query($id: Long!) {
+                    recipe(id: $id) {
+                        id
+                        title
+                        contributor { id email }
+                    }
+                }",
+                new { id });
+
+            JsonElement GetRecipeElement(JsonDocument document) =>
+                document.RootElement.GetProperty("data").GetProperty("recipe");
+
+            using (var document = await PostRecipeQuery(recipe.Id))
+            {
+                var expected = new
+                {
+                    recipe.Id,
+                    recipe.Title,
+                    Contributor = new
+                    {
+                        recipe.Contributor!.Id,
+                        recipe.Contributor.Email
+                    }
+                };
+
+                JsonAssert.Equivalent(expected, GetRecipeElement(document));
+            }
+
+            using (var document = await PostRecipeQuery(this.sampleDataFactory.NextInt()))
+            {
+                JsonAssert.Null(GetRecipeElement(document));
+            }
+        }
+        finally
+        {
+            await dbContext.Recipes.ExecuteDeleteAsync();
+            await dbContext.Users.ExecuteDeleteAsync();
+        }
+    }
 
     [Fact]
     public async void QueryingRecipes()
