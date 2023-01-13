@@ -1,2 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Buttercup.Api.DbModel\Buttercup.Api.DbModel.csproj" />
+  </ItemGroup>
 </Project>

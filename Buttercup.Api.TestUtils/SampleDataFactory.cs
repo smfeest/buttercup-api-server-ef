@@ -1,6 +1,6 @@
 using Buttercup.Api.DbModel;
 
-namespace Buttercup.Api.IntegrationTests;
+namespace Buttercup.Api.TestUtils;
 
 /// <summary>
 /// Provides methods for generating sample data.

@@ -17,5 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Buttercup.Api\Buttercup.Api.csproj" />
+    <ProjectReference Include="..\Buttercup.Api.TestUtils\Buttercup.Api.TestUtils.csproj" />
   </ItemGroup>
 </Project>
