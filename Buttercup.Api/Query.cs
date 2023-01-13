@@ -4,6 +4,11 @@ namespace Buttercup.Api;
 
 public sealed class Query
 {
+    [UseSingleOrDefault]
+    [UseProjection]
+    public IQueryable<Recipe> GetRecipe(AppDbContext dbContext, long id) =>
+        dbContext.Recipes.Where(r => r.Id == id);
+
     [UseProjection]
     public IQueryable<Recipe> GetRecipes(AppDbContext dbContext) => dbContext.Recipes;
 
