@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.DbModel.Migra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.TestUtils", "Buttercup.Api.TestUtils\Buttercup.Api.TestUtils.csproj", "{1E6613EB-3E78-43ED-8F89-74EEF6A0835A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.Security", "Buttercup.Api.Security\Buttercup.Api.Security.csproj", "{C9A9BC0B-AEF0-477B-A947-C35995A2649B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{1E6613EB-3E78-43ED-8F89-74EEF6A0835A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E6613EB-3E78-43ED-8F89-74EEF6A0835A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E6613EB-3E78-43ED-8F89-74EEF6A0835A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9A9BC0B-AEF0-477B-A947-C35995A2649B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9A9BC0B-AEF0-477B-A947-C35995A2649B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9A9BC0B-AEF0-477B-A947-C35995A2649B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9A9BC0B-AEF0-477B-A947-C35995A2649B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
