@@ -26,6 +26,11 @@ public class AppDbContext : DbContext
     public DbSet<Recipe> Recipes => this.Set<Recipe>();
 
     /// <summary>
+    /// Gets the set of all sessions.
+    /// </summary>
+    public DbSet<Session> Sessions => this.Set<Session>();
+
+    /// <summary>
     /// Gets the set of all users.
     /// </summary>
     public DbSet<User> Users => this.Set<User>();
