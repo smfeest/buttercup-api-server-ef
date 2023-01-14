@@ -15,6 +15,7 @@ builder.Services.AddPooledDbContextFactory<AppDbContext>(
             npgsqlOptions => npgsqlOptions
                 .MigrationsAssembly("Buttercup.Api.DbModel.Migrations")
                 .MigrationsHistoryTable("__migration_history"))
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
         .UseSnakeCaseNamingConvention());
 
 builder.Services
