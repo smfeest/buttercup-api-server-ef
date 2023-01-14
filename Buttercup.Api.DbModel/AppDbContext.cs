@@ -10,4 +10,6 @@ public class AppDbContext : DbContext
     public DbSet<Recipe> Recipes => Set<Recipe>();
 
     public DbSet<User> Users => Set<User>();
+
+    public DbSet<Session> Sessions => Set<Session>();
 }
