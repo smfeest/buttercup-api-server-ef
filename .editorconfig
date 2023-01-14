@@ -24,6 +24,10 @@ dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visi
 dotnet_analyzer_diagnostic.category-Style.severity = warning
 dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
 
+[*Tests.cs]
+# Code quality analysis rules
+dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
+
 [*.sln]
 charset = utf-8-bom
 end_of_line = crlf
