@@ -7,27 +7,31 @@ using Xunit;
 
 namespace Buttercup.Api.Security;
 
+[Collection(nameof(SecurityTestsDbCollection))]
 public class PasswordAuthenticationServiceTests
 {
+    private readonly SecurityTestsDbFixture dbFixture;
     private readonly ListLogger<PasswordAuthenticationService> logger = new();
     private readonly SampleDataFactory modelFactory = new();
     private readonly Mock<IPasswordHasher<User>> mockPasswordHasher = new();
     private readonly PasswordAuthenticationService passwordAuthenticationService;
 
-    public PasswordAuthenticationServiceTests() =>
+    public PasswordAuthenticationServiceTests(SecurityTestsDbFixture dbFixture)
+    {
+        this.dbFixture = dbFixture;
+
         this.passwordAuthenticationService = new(
-            Mock.Of<IDbContextFactory<AppDbContext>>(),
+            this.dbFixture.DbContextFactory,
             this.logger,
             this.mockPasswordHasher.Object);
+    }
 
     #region Authenticate
 
     [Fact]
     public async Task Authenticate_LogsAndReturnsNullWhenEmailNotFound()
     {
-        var fixture = new AuthenticateFixture(this);
-
-        fixture.SetupEmailNotFound();
+        await using var fixture = new AuthenticateFixture(this);
 
         Assert.Null(await fixture.Authenticate());
 
@@ -40,9 +44,9 @@ public class PasswordAuthenticationServiceTests
     [Fact]
     public async Task Authenticate_LogsAndReturnsNullWhenUserHasNoPassword()
     {
-        var fixture = new AuthenticateFixture(this);
+        await using var fixture = new AuthenticateFixture(this);
 
-        var user = fixture.SetupUserHasNoPassword();
+        var user = await fixture.SetupUserHasNoPassword();
 
         Assert.Null(await fixture.Authenticate());
 
@@ -55,9 +59,9 @@ public class PasswordAuthenticationServiceTests
     [Fact]
     public async Task Authenticate_LogsAndReturnsNullWhenPasswordIsIncorrect()
     {
-        var fixture = new AuthenticateFixture(this);
+        await using var fixture = new AuthenticateFixture(this);
 
-        var user = fixture.SetupUserHasPassword(PasswordVerificationResult.Failed);
+        var user = await fixture.SetupUserHasPassword(PasswordVerificationResult.Failed);
 
         Assert.Null(await fixture.Authenticate());
 
@@ -73,18 +77,18 @@ public class PasswordAuthenticationServiceTests
     public async Task Authenticate_LogsAndReturnsUserOnSuccess(
         PasswordVerificationResult verificationResult)
     {
-        var fixture = new AuthenticateFixture(this);
+        await using var fixture = new AuthenticateFixture(this);
 
-        var user = fixture.SetupUserHasPassword(verificationResult);
+        var user = await fixture.SetupUserHasPassword(verificationResult);
 
-        Assert.Equal(user, await fixture.Authenticate());
+        Assert.Equivalent(user, await fixture.Authenticate());
 
         Assert.Contains(
             this.logger.Entries,
             entry => entry.Message == $"User {user.Id} successfully authenticated");
     }
 
-    private class AuthenticateFixture
+    private sealed class AuthenticateFixture : IAsyncDisposable
     {
         public const string Password = "user-password";
         public const string PasswordHash = "password-hash";
@@ -95,36 +99,41 @@ public class PasswordAuthenticationServiceTests
         public AuthenticateFixture(PasswordAuthenticationServiceTests context) =>
             this.context = context;
 
+        public async ValueTask DisposeAsync()
+        {
+            using var dbContext = this.context.dbFixture.DbContextFactory.CreateDbContext();
+
+            await dbContext.Users.ExecuteDeleteAsync();
+        }
+
         public Task<User?> Authenticate() =>
             this.context.passwordAuthenticationService.Authenticate(SuppliedEmail, Password);
 
-        public void SetupEmailNotFound() => this.SetupFindUserByEmail(null);
+        public Task<User> SetupUserHasNoPassword() => this.SetupUserExists(null);
 
-        public User SetupUserHasNoPassword() => this.SetupUserExists(null);
-
-        public User SetupUserHasPassword(PasswordVerificationResult verificationResult)
+        public async Task<User> SetupUserHasPassword(PasswordVerificationResult verificationResult)
         {
-            var user = this.SetupUserExists(PasswordHash);
+            var user = await this.SetupUserExists(PasswordHash);
 
             context.mockPasswordHasher
-                .Setup(x => x.VerifyHashedPassword(user, PasswordHash, Password))
+                .Setup(x => x.VerifyHashedPassword(It.IsAny<User>(), PasswordHash, Password)) // TODO: Maybe don't stub this?
                 .Returns(verificationResult);
 
             return user;
         }
 
-        private void SetupFindUserByEmail(User? user) =>
-            throw new NotImplementedException();
-        // this.context.mockUserDataProvider
-        //     .Setup(x => x.FindUserByEmail(context.mySqlConnection, SuppliedEmail))
-        //     .ReturnsAsync(user);
-
-        private User SetupUserExists(string? passwordHash)
+        private async Task<User> SetupUserExists(string? passwordHash)
         {
             var user = this.context.modelFactory.BuildUser();
+
+            user.Email = SuppliedEmail;
             user.PasswordHash = passwordHash;
 
-            this.SetupFindUserByEmail(user);
+            using var dbContext = this.context.dbFixture.DbContextFactory.CreateDbContext();
+
+            dbContext.Users.Add(user);
+
+            await dbContext.SaveChangesAsync();
 
             return user;
         }
