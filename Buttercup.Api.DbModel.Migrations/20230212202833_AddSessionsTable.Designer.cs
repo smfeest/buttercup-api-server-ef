@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Buttercup.Api.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Buttercup.Api.DbModel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230212202833_AddSessionsTable")]
+    partial class AddSessionsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,9 +104,9 @@ namespace Buttercup.Api.DbModel.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("current_tokens_issued");
 
-                    b.Property<int?>("LastTokenGeneration")
+                    b.Property<int?>("MostRecentlyAcceptedTokenGeneration")
                         .HasColumnType("integer")
-                        .HasColumnName("last_token_generation");
+                        .HasColumnName("most_recently_accepted_token_generation");
 
                     b.Property<DateTime?>("Terminated")
                         .HasColumnType("timestamp with time zone")
