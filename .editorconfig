@@ -25,6 +25,8 @@ dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
 [*Tests.cs]
 # Compiler warnings
 dotnet_diagnostic.CS1591.severity = none # Missing XML comment for publicly visible type or member
+# Code quality analysis rules
+dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
 
 [Buttercup.Api.DbModel.Migrations/**]
 # Compiler warnings
