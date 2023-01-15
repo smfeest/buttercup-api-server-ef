@@ -9,15 +9,18 @@ public sealed class PasswordAuthenticationService : IPasswordAuthenticationServi
 {
     private readonly IDbContextFactory<AppDbContext> dbContextFactory;
     private readonly ILogger<PasswordAuthenticationService> logger;
+    private readonly IPasswordAuthenticationQueries passwordAuthenticationQueries;
     private readonly IPasswordHasher<User> passwordHasher;
 
     public PasswordAuthenticationService(
         IDbContextFactory<AppDbContext> dbContextFactory,
         ILogger<PasswordAuthenticationService> logger,
+        IPasswordAuthenticationQueries passwordAuthenticationQueries,
         IPasswordHasher<User> passwordHasher)
     {
         this.dbContextFactory = dbContextFactory;
         this.logger = logger;
+        this.passwordAuthenticationQueries = passwordAuthenticationQueries;
         this.passwordHasher = passwordHasher;
     }
 
@@ -25,7 +28,7 @@ public sealed class PasswordAuthenticationService : IPasswordAuthenticationServi
     {
         using var dbContext = await this.dbContextFactory.CreateDbContextAsync();
 
-        var user = await dbContext.Users.SingleOrDefaultAsync(u => u.Email == email);
+        var user = await this.passwordAuthenticationQueries.FindUserByEmail(dbContext, email);
 
         if (user == null)
         {
@@ -52,6 +55,19 @@ public sealed class PasswordAuthenticationService : IPasswordAuthenticationServi
         }
 
         AuthenticateLogMessages.Success(this.logger, user.Id, null);
+
+        if (verificationResult == PasswordVerificationResult.SuccessRehashNeeded)
+        {
+            var newHash = this.passwordHasher.HashPassword(user, password);
+
+            if (await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
+                dbContext, user.Id, user.PasswordHash, newHash))
+            {
+                AuthenticateLogMessages.UpgradedPasswordHash(this.logger, user.Id, null);
+
+                user.PasswordHash = newHash;
+            }
+        }
 
         return user;
     }
@@ -81,5 +97,11 @@ public sealed class PasswordAuthenticationService : IPasswordAuthenticationServi
                 LogLevel.Information,
                 new(4, nameof(Authenticate)),
                 "Authentication failed; no user with email {Email}");
+
+        public static readonly Action<ILogger, long, Exception?> UpgradedPasswordHash =
+            LoggerMessage.Define<long>(
+                LogLevel.Debug,
+                new(5, nameof(Authenticate)),
+                "Upgraded password hash for user {UserId}");
     }
 }
