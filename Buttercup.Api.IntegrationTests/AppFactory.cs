@@ -1,4 +1,5 @@
 using Buttercup.Api.DbModel;
+using Buttercup.Api.TestUtils;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -10,37 +11,21 @@ namespace Buttercup.Api.IntegrationTests;
 /// </summary>
 public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
 {
-    Task IAsyncLifetime.InitializeAsync() => this.RecreateDatabase();
-
-    async Task IAsyncLifetime.DisposeAsync() => await this.DisposeAsync();
+    private readonly DbFixture<AppFactory> dbFixture = new();
 
     /// <summary>
-    /// Creates a new instance of <see cref="AppDbContext" /> that connects to the test database.
+    /// Gets the database context factory.
     /// </summary>
-    /// <returns>The new <see cref="AppDbContext" /> instance.</returns>
-    public async Task<AppDbContext> CreateAppDbContext()
-    {
-        using var scope = this.Services.CreateScope();
-
-        var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
-
-        return await contextFactory.CreateDbContextAsync();
-    }
+    public IDbContextFactory<AppDbContext> DbContextFactory => this.dbFixture;
 
     /// <inheritdoc/>
     protected override void ConfigureWebHost(IWebHostBuilder builder) =>
         builder
-            .UseSetting(
-                "ConnectionStrings:AppDb",
-                "Host=localhost;Username=buttercup_dev;Password=buttercup_dev;Database=buttercup_test")
+            .UseSetting("ConnectionStrings:AppDb", dbFixture.ConnectionString)
             .UseSetting("HostBuilder:ReloadConfigOnChange", bool.FalseString)
             .UseSetting("Logging:LogLevel:Default", "Warning");
 
-    private async Task RecreateDatabase()
-    {
-        using var context = await this.CreateAppDbContext();
+    Task IAsyncLifetime.InitializeAsync() => ((IAsyncLifetime)dbFixture).InitializeAsync();
 
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.EnsureCreatedAsync();
-    }
+    Task IAsyncLifetime.DisposeAsync() => ((IAsyncLifetime)dbFixture).DisposeAsync();
 }
