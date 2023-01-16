@@ -16,7 +16,7 @@ public class RecipesTests
     [Fact]
     public async void QueryingRecipe()
     {
-        using var dbContext = await this.appFactory.DbContextFactory.CreateDbContextAsync();
+        using var dbContext = this.appFactory.DbContextFactory.CreateDbContext();
 
         try
         {
@@ -72,7 +72,7 @@ public class RecipesTests
     [Fact]
     public async void QueryingRecipes()
     {
-        using var dbContext = await this.appFactory.DbContextFactory.CreateDbContextAsync();
+        using var dbContext = this.appFactory.DbContextFactory.CreateDbContext();
 
         try
         {
