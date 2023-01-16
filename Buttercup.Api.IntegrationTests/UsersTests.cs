@@ -16,7 +16,7 @@ public class UsersTests
     [Fact]
     public async void QueryingUser()
     {
-        using var dbContext = await this.appFactory.CreateAppDbContext();
+        using var dbContext = await this.appFactory.DbContextFactory.CreateDbContextAsync();
 
         try
         {
@@ -58,7 +58,7 @@ public class UsersTests
     [Fact]
     public async void QueryingUsers()
     {
-        using var dbContext = await this.appFactory.CreateAppDbContext();
+        using var dbContext = await this.appFactory.DbContextFactory.CreateDbContextAsync();
 
         try
         {
