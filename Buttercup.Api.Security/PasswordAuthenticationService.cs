@@ -26,7 +26,7 @@ public sealed class PasswordAuthenticationService : IPasswordAuthenticationServi
 
     public async Task<User?> Authenticate(string email, string password)
     {
-        using var dbContext = await this.dbContextFactory.CreateDbContextAsync();
+        using var dbContext = this.dbContextFactory.CreateDbContext();
 
         var user = await this.passwordAuthenticationQueries.FindUserByEmail(dbContext, email);
 
