@@ -42,8 +42,8 @@ public interface IPasswordAuthenticationQueries
     /// The new password hash.
     /// </param>
     /// <returns>
-    /// A task for the operation. The result is <c>true</c> if the hash was updated; <b>false</b> if
-    /// no user was found with the specified user ID and current hash.
+    /// A task for the operation. The result is <c>true</c> if the password hash was updated;
+    /// <b>false</b> if no user was found with the specified user ID and current password hash.
     /// </returns>
     Task<bool> SaveUpgradedPasswordHash(
         AppDbContext dbContext, long userId, string currentHash, string newHash);
