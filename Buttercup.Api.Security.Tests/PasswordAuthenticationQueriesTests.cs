@@ -1,4 +1,3 @@
-using Buttercup.Api.DbModel;
 using Buttercup.Api.TestUtils;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -6,7 +5,7 @@ using Xunit;
 namespace Buttercup.Api.Security;
 
 public sealed class PasswordAuthenticationQueriesTests :
-    IClassFixture<DbFixture<PasswordAuthenticationQueriesTests>>
+    IClassFixture<DbFixture<PasswordAuthenticationQueriesTests>>, IAsyncLifetime
 {
     private readonly DbFixture<PasswordAuthenticationQueriesTests> dbFixture;
     private readonly PasswordAuthenticationQueries passwordAuthenticationQueries = new();
@@ -16,6 +15,14 @@ public sealed class PasswordAuthenticationQueriesTests :
         DbFixture<PasswordAuthenticationQueriesTests> databaseFixture) =>
         this.dbFixture = databaseFixture;
 
+    public Task InitializeAsync() => Task.CompletedTask;
+
+    public async Task DisposeAsync()
+    {
+        using var dbContext = this.dbFixture.CreateDbContext();
+        await dbContext.Users.ExecuteDeleteAsync();
+    }
+
     #region FindUserByEmail
 
     [Fact]
@@ -23,28 +30,20 @@ public sealed class PasswordAuthenticationQueriesTests :
     {
         using var dbContext = this.dbFixture.CreateDbContext();
 
-        try
+        var users = new[]
         {
-            var users = new[]
-            {
-                this.sampleDataFactory.BuildUser(),
-                this.sampleDataFactory.BuildUser(),
-            };
+            this.sampleDataFactory.BuildUser(),
+            this.sampleDataFactory.BuildUser(),
+        };
 
-            dbContext.Users.AddRange(users);
-            await dbContext.SaveChangesAsync();
+        dbContext.Users.AddRange(users);
+        await dbContext.SaveChangesAsync();
 
-            foreach (var user in users)
-            {
-                Assert.Equivalent(
-                    user,
-                    await this.passwordAuthenticationQueries.FindUserByEmail(
-                        dbContext, user.Email));
-            }
-        }
-        finally
+        foreach (var user in users)
         {
-            await dbContext.Users.ExecuteDeleteAsync();
+            Assert.Equal(
+                user,
+                await this.passwordAuthenticationQueries.FindUserByEmail(dbContext, user.Email));
         }
     }
 
@@ -61,99 +60,76 @@ public sealed class PasswordAuthenticationQueriesTests :
 
     #region SaveUpgradedPasswordHash
 
-    private sealed class SaveUpgradedPasswordHashFixture : IAsyncDisposable
-    {
-        public const string CurrentHash = "current-hash";
-        public const string NewHash = "new-hash";
-
-        private readonly PasswordAuthenticationQueriesTests context;
-
-        public SaveUpgradedPasswordHashFixture(PasswordAuthenticationQueriesTests context)
-        {
-            this.context = context;
-
-            var user = context.sampleDataFactory.BuildUser();
-            user.PasswordHash = CurrentHash;
-            this.User = user;
-        }
-
-        public User User { get; }
-
-        public async Task InsertUser()
-        {
-            using var dbContext = this.context.dbFixture.CreateDbContext();
-            dbContext.Add(this.User);
-            await dbContext.SaveChangesAsync();
-        }
-
-        public async Task<User?> RefetchUser()
-        {
-            using var dbContext = this.context.dbFixture.CreateDbContext();
-            return await dbContext.Users.FindAsync(this.User.Id);
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            using var dbContext = this.context.dbFixture.CreateDbContext();
-            await dbContext.Users.ExecuteDeleteAsync();
-        }
-    }
-
     [Fact]
     public async Task SaveUpgradedPasswordHash_UpdatesHashAndReturnsTrueWhenUserIdAndCurrentHashMatch()
     {
-        await using var fixture = new SaveUpgradedPasswordHashFixture(this);
+        var userBefore = this.sampleDataFactory.BuildUser() with { PasswordHash = "current-hash" };
 
-        await fixture.InsertUser();
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            dbContext.Users.Add(userBefore);
+            await dbContext.SaveChangesAsync();
+        }
 
-        Assert.True(
-            await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
-                this.dbFixture.CreateDbContext(),
-                fixture.User.Id,
-                SaveUpgradedPasswordHashFixture.CurrentHash,
-                SaveUpgradedPasswordHashFixture.NewHash));
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            Assert.True(await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
+                dbContext, userBefore.Id, "current-hash", "new-hash"));
+        }
 
-        var refetchedUser = await fixture.RefetchUser();
-
-        Assert.Equal(SaveUpgradedPasswordHashFixture.NewHash, refetchedUser?.PasswordHash);
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            var userAfter = await dbContext.Users.FindAsync(userBefore.Id);
+            Assert.Equal(userBefore with { PasswordHash = "new-hash" }, userAfter);
+        }
     }
 
     [Fact]
     public async Task SaveUpgradedPasswordHash_DoesNotUpdateHashAndReturnsFalseWhenUserIdDoesNotMatch()
     {
-        await using var fixture = new SaveUpgradedPasswordHashFixture(this);
+        var userBefore = this.sampleDataFactory.BuildUser() with { PasswordHash = "current-hash" };
 
-        await fixture.InsertUser();
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            dbContext.Users.Add(userBefore);
+            await dbContext.SaveChangesAsync();
+        }
 
-        Assert.False(
-            await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
-                this.dbFixture.CreateDbContext(),
-                this.sampleDataFactory.NextInt(),
-                SaveUpgradedPasswordHashFixture.CurrentHash,
-                SaveUpgradedPasswordHashFixture.NewHash));
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            Assert.False(await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
+                dbContext, this.sampleDataFactory.NextInt(), "current-hash", "new-hash"));
+        }
 
-        var refetchedUser = await fixture.RefetchUser();
-
-        Assert.Equal(SaveUpgradedPasswordHashFixture.CurrentHash, refetchedUser?.PasswordHash);
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            var userAfter = await dbContext.Users.FindAsync(userBefore.Id);
+            Assert.Equal(userBefore, userAfter);
+        }
     }
 
     [Fact]
     public async Task SaveUpgradedPasswordHash_DoesNotUpdateHashAndReturnsFalseWhenCurrentHashDoesNotMatch()
     {
-        await using var fixture = new SaveUpgradedPasswordHashFixture(this);
+        var userBefore = this.sampleDataFactory.BuildUser();
 
-        await fixture.InsertUser();
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            dbContext.Users.Add(userBefore);
+            await dbContext.SaveChangesAsync();
+        }
 
-        Assert.False(
-            await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
-                this.dbFixture.CreateDbContext(),
-                fixture.User.Id,
-                "old-hash",
-                SaveUpgradedPasswordHashFixture.NewHash));
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            Assert.False(await this.passwordAuthenticationQueries.SaveUpgradedPasswordHash(
+                dbContext, userBefore.Id, "stale-hash", "new-hash"));
+        }
 
-        var refetchedUser = await fixture.RefetchUser();
-
-        Assert.Equal(SaveUpgradedPasswordHashFixture.CurrentHash, refetchedUser?.PasswordHash);
+        using (var dbContext = this.dbFixture.CreateDbContext())
+        {
+            var userAfter = await dbContext.Users.FindAsync(userBefore.Id);
+            Assert.Equal(userBefore, userAfter);
+        }
     }
 
     #endregion
