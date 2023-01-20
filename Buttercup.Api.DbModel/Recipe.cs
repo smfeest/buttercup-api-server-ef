@@ -1,6 +1,6 @@
 namespace Buttercup.Api.DbModel;
 
-public class Recipe
+public record Recipe
 {
     public required long Id { get; set; }
     public required string Title { get; set; }
