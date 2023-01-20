@@ -3,7 +3,7 @@ namespace Buttercup.Api.DbModel;
 /// <summary>
 /// Represents a user.
 /// </summary>
-public class User
+public record User
 {
     /// <summary>
     /// Gets or sets the primary key of the user.

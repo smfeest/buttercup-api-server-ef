@@ -3,7 +3,7 @@ namespace Buttercup.Api.DbModel;
 /// <summary>
 /// Represents a recipe.
 /// </summary>
-public class Recipe
+public record Recipe
 {
     /// <summary>
     /// Gets or sets the primary key of the recipe.
