@@ -9,15 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 var isDevelopment = builder.Environment.IsDevelopment();
 
 builder.Services.AddPooledDbContextFactory<AppDbContext>(
-    options => options
-        .UseNpgsql(
-            builder.Configuration.GetConnectionString("AppDb"),
-            npgsqlOptions => npgsqlOptions
-                .MigrationsAssembly("Buttercup.Api.DbModel.Migrations")
-                .MigrationsHistoryTable("__migration_history")
-                .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-        .UseSnakeCaseNamingConvention());
+    options => options.UseAppDbOptions(builder.Configuration.GetConnectionString("AppDb")));
 
 builder.Services
     .AddGraphQLServer()
