@@ -10,6 +10,12 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Initializes a new instance of the <see cref="AppDbContext" /> class.
     /// </summary>
+    public AppDbContext()
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AppDbContext" /> class.
+    /// </summary>
     /// <param name="options">The options for this context.</param>
     public AppDbContext(DbContextOptions options) : base(options)
     { }
