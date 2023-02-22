@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.Security.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.Common", "Buttercup.Api.Common\Buttercup.Api.Common.csproj", "{27DB97BD-7FFE-4C49-9053-3AA3658D9E83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buttercup.Api.Common.Tests", "Buttercup.Api.Common.Tests\Buttercup.Api.Common.Tests.csproj", "{8AC2A1A1-237C-491F-B8F9-E58CAEA0AE64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +62,9 @@ Global
 		{27DB97BD-7FFE-4C49-9053-3AA3658D9E83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DB97BD-7FFE-4C49-9053-3AA3658D9E83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DB97BD-7FFE-4C49-9053-3AA3658D9E83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AC2A1A1-237C-491F-B8F9-E58CAEA0AE64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AC2A1A1-237C-491F-B8F9-E58CAEA0AE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AC2A1A1-237C-491F-B8F9-E58CAEA0AE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AC2A1A1-237C-491F-B8F9-E58CAEA0AE64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
