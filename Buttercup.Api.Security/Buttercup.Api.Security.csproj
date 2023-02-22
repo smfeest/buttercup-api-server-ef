@@ -7,5 +7,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Buttercup.Api.DbModel\Buttercup.Api.DbModel.csproj" />
+    <ProjectReference Include="..\Buttercup.Api.Common\Buttercup.Api.Common.csproj" />
   </ItemGroup>
 </Project>
