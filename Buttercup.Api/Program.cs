@@ -1,5 +1,6 @@
 using Buttercup.Api;
 using Buttercup.Api.DbModel;
+using Buttercup.Api.Security;
 using Microsoft.EntityFrameworkCore;
 
 #pragma warning disable CA1852
@@ -23,7 +24,8 @@ builder.Services
 builder.Services.AddDataProtection();
 
 builder.Services
-    .AddCommonServices();
+    .AddCommonServices()
+    .AddSecurityServices();
 
 var app = builder.Build();
 
