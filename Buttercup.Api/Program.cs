@@ -20,6 +20,9 @@ builder.Services
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment)
     .RegisterDbContext<AppDbContext>(DbContextKind.Pooled);
 
+builder.Services
+    .AddCommonServices();
+
 var app = builder.Build();
 
 app.MapGraphQL().WithOptions(new()
