@@ -20,6 +20,8 @@ builder.Services
     .ModifyRequestOptions(options => options.IncludeExceptionDetails = isDevelopment)
     .RegisterDbContext<AppDbContext>(DbContextKind.Pooled);
 
+builder.Services.AddDataProtection();
+
 builder.Services
     .AddCommonServices();
 
