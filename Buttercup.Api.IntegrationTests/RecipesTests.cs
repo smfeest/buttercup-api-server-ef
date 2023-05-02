@@ -5,13 +5,12 @@ using Xunit;
 
 namespace Buttercup.Api.IntegrationTests;
 
-[Collection(nameof(IntegrationTestCollection))]
-public class RecipesTests
+public class RecipesTests : IClassFixture<AppFactory<RecipesTests>>
 {
-    private readonly AppFactory appFactory;
+    private readonly AppFactory<RecipesTests> appFactory;
     private readonly SampleDataFactory sampleDataFactory = new();
 
-    public RecipesTests(AppFactory appFactory) => this.appFactory = appFactory;
+    public RecipesTests(AppFactory<RecipesTests> appFactory) => this.appFactory = appFactory;
 
     [Fact]
     public async void QueryingRecipe()

@@ -9,9 +9,9 @@ namespace Buttercup.Api.IntegrationTests;
 /// <summary>
 /// The fixture used to bootstrap the application for integration testing.
 /// </summary>
-public class AppFactory : WebApplicationFactory<Query>, IAsyncLifetime
+public class AppFactory<TDatabaseName> : WebApplicationFactory<Query>, IAsyncLifetime
 {
-    private readonly DbFixture<AppFactory> dbFixture = new();
+    private readonly DbFixture<TDatabaseName> dbFixture = new();
 
     /// <summary>
     /// Gets the database context factory.

@@ -5,13 +5,12 @@ using Xunit;
 
 namespace Buttercup.Api.IntegrationTests;
 
-[Collection(nameof(IntegrationTestCollection))]
-public class UsersTests
+public class UsersTests : IClassFixture<AppFactory<UsersTests>>
 {
-    private readonly AppFactory appFactory;
+    private readonly AppFactory<UsersTests> appFactory;
     private readonly SampleDataFactory sampleDataFactory = new();
 
-    public UsersTests(AppFactory appFactory) => this.appFactory = appFactory;
+    public UsersTests(AppFactory<UsersTests> appFactory) => this.appFactory = appFactory;
 
     [Fact]
     public async void QueryingUser()
